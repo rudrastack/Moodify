@@ -6,10 +6,9 @@ export default function FaceExpression() {
 const videoRef = useRef(null);
 const landmarkerRef = useRef(null);
 const animationRef = useRef(null);
+let stream;
 const [expression, setExpression] = useState("Detecting...");
 
-useEffect(() => {
-let stream;
 
 const init = async () => {
 const vision = await FilesetResolver.forVisionTasks(
@@ -62,6 +61,9 @@ setExpression(currentExpression);
 animationRef.current = requestAnimationFrame(detect);
 };
 
+useEffect(() => {
+
+
 init();
 
 return () => {
@@ -87,6 +89,7 @@ style={{ width: "400px", borderRadius: "12px" }}
 playsInline
 />
 <h2>{expression}</h2>
+<button onClick={detect}>Detect Expression</button>
 </div>
 );
 }
