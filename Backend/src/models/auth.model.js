@@ -14,7 +14,8 @@ const userSchema = new moongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        select: false
     }
 }, { timestamps: true });
 

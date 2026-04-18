@@ -1,4 +1,5 @@
 const userModel = require('../models/auth.model');
+const blacklistModel = require('../models/blacklist.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -6,14 +7,17 @@ require('dotenv').config();
 async function registerUser(req, res) {
 
         const { username, email, password } = req.body;
+        
         const existingUser = await userModel.findOne({
             $or: [{ email }, { username }]
         });
+
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new userModel({ username, email, password: hashedPassword });
+        const user = await userModel.create({ username, email, password: hashedPassword });
         const token = jwt.sign({
             id: user._id,
             username: user.username
@@ -39,7 +43,9 @@ async function loginUser(req, res) {
         const user = await userModel.findOne({
              $or: [
                 { email }, { username }
-            ] });
+            ]
+        }).select('+password');
+
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' });
         }
@@ -64,10 +70,34 @@ async function loginUser(req, res) {
                 email: user.email
             }
         });
-   
+
 };
+
+async function getUser(req, res) {
+    const user = await userModel.findById(req.user.id)
+
+    res.status(200).json({
+        message: "User fetched successfully",
+        user
+    })
+}
+
+async function logoutUser(req, res) {
+
+    const token = req.cookies.token
+
+    res.clearCookie("token")
+
+    await blacklistModel.create({ token })
+
+    res.status(200).json({
+        message: "logout successfully."
+    })
+}
 
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getUser,
+    logoutUser
 };
