@@ -1,5 +1,6 @@
 const userModel = require('../models/auth.model');
 const blacklistModel = require('../models/blacklist.model');
+const redis = require('../config/cache')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -87,8 +88,8 @@ async function logoutUser(req, res) {
     const token = req.cookies.token
 
     res.clearCookie("token")
-
-    await blacklistModel.create({ token })
+      
+    await redis.set(token, Date.now().toString(), "EX", 60 * 60)
 
     res.status(200).json({
         message: "logout successfully."
