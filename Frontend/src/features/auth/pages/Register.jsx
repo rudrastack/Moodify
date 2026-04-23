@@ -8,17 +8,19 @@ import { useNavigate } from 'react-router'
 
 const Register = () => {
 
-  const { loading, handleRegister } = useAuth()
-
-  const navigate = useNavigate()
-
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const navigate = useNavigate()
+
+  const { loading, handleRegister } = useAuth()
+
   async function handleSubmit(e) {
     e.preventDefault()
-    await handleRegister(username, email, password)
+
+    await handleRegister({username, email, password})
+    
     navigate('/')
 
   }

@@ -1,4 +1,4 @@
-import {login, register, getUser, logout} from '../services/auth.api'
+import {login, register, get, logout} from '../services/auth.api'
 import { useContext } from 'react'
 import { AuthContext } from '../auth.context'
 import { useEffect } from 'react'
@@ -20,9 +20,9 @@ export const useAuth = () => {
         setLoading(false)
     }
 
-    async function handlegetUser() {
+    async function handleget() {
         setLoading(true)
-        const data = await getUser()
+        const data = await get()
         setUser(data.user)
         setLoading(false)
     }
@@ -34,11 +34,15 @@ export const useAuth = () => {
         setLoading(false)
     }
 
-    useEffect(() => {
-        handlegetUser()
-    }, [])
+   useEffect(() => {
+  const token = document.cookie;
 
-    return {user, setUser, loading, setLoading, handleRegister, handleLogin, handlegetUser, handleLogout}
+  if (!token) return;
+
+  get();
+}, []);
+
+    return( {user, setUser, loading, setLoading, handleRegister, handleLogin, handleget, handleLogout})
 }
 
 
