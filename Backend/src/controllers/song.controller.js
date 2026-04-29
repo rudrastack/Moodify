@@ -1,29 +1,46 @@
 const SongModel = require('../models/song.model');
 const id3 = require('node-id3');
+const storageService = require('../services/storage.service');
 
 
 async function uploadSong(req, res) {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
-    }
 
-    const tags = id3.read(req.file.buffer);
-    console.log(tags);
+    const songBuffer = req.file.buffer
+    const { mood } = req.body
 
-    return res.status(200).json({
-      message: "Song uploaded successfully",
-      tags
-    });
+    const tags = id3.read(songBuffer)
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
+    const [ songFile, posterFile ] = await Promise.all([
+        storageService.uploadFile({
+            buffer: songBuffer,
+            filename: tags.title + ".mp3",
+            folder: "/moodify/songs"
+        }),
+        storageService.uploadFile({
+            buffer: tags.image.imageBuffer,
+            filename: tags.title + ".jpeg",
+            folder: "/moodify/posters"
+        })
+    ])
+    
+
+    const song = await SongModel.create({
+        title: tags.title,
+        url: songFile.url,
+        thumbnailUrl: posterFile.url,
+        mood
+    })
+
+    res.status(201).json({
+        message: "song created successfully",
+        song
+    })
+
 }
 
 
 
+
 module.exports = {
-    uploadSong
+  uploadSong
 }

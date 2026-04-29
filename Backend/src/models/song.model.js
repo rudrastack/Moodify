@@ -6,7 +6,7 @@ const songSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    posturl : {    
+    thumbnailUrl : {    
         type: String,
         required: true
     },
@@ -14,6 +14,13 @@ const songSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true
+    },
+    mood:{
+        type: String,
+enum:{
+    values: ["sad", "happy", "surprised"],
+    message: "this is enum"
+}
     }
 
 })
