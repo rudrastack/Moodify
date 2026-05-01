@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { detect, init } from "../utils/utils";
+import "./faceExpression.scss"
 
 
 export default function FaceExpression({ onClick = () => { } }) {
@@ -7,7 +8,7 @@ export default function FaceExpression({ onClick = () => { } }) {
     const landmarkerRef = useRef(null);
     const streamRef = useRef(null);
 
-    const [ expression, setExpression ] = useState("Detecting...");
+    const [expression, setExpression] = useState("Detecting...");
 
     useEffect(() => {
         init({ landmarkerRef, videoRef, streamRef });
@@ -32,14 +33,16 @@ export default function FaceExpression({ onClick = () => { } }) {
 
 
     return (
-        <div style={{ textAlign: "center" }}>
+        <div className="camera">
             <video
                 ref={videoRef}
-                style={{ width: "400px", borderRadius: "12px" }}
+                className="camera__video"
                 playsInline
             />
-            <h2>{expression}</h2>
-            <button onClick={handleClick} >Detect expression</button>
+            <h2 className="camera__title">{expression}</h2>
+            <button onClick={handleClick} className="camera__btn">
+                Detect Expression
+            </button>
         </div>
     );
 }

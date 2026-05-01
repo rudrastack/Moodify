@@ -7,8 +7,31 @@
 }
 
 html, body, #root {
-    font-family: 'Poppins', sans-serif;
-    width: 100%;
-    background-color: rgb(40, 40, 40);
-    color: whitesmoke;
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  color: whitesmoke;
+
+  background: linear-gradient(
+    135deg,
+    #1a1b1b,
+    #30364F,
+    #1f2235,
+    #121212
+  );
+
+  background-size: 300% 300%;
+  animation: gradientMove 12s ease infinite;
+}
+
+/* Smooth gradient animation */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
